@@ -85,52 +85,108 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
     return Scaffold(
       appBar: AppBar(title: const Text('Edit Profile')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              Center(
-                child: CircleAvatar(
-                  radius: 48,
-                  backgroundColor: Colors.deepPurple,
-                  child: const Icon(
-                    Icons.person,
-                    size: 48,
-                    color: Colors.white,
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Center(
+                  child: Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Edit Profile',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24,
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            Center(
+                              child: _profilePicUrl != null && _profilePicUrl!.isNotEmpty && Uri.tryParse(_profilePicUrl!)?.isAbsolute == true
+                                  ? CircleAvatar(
+                                      radius: 48,
+                                      backgroundImage: NetworkImage(_profilePicUrl!),
+                                      backgroundColor: Colors.grey[200],
+                                    )
+                                  : CircleAvatar(
+                                      radius: 48,
+                                      backgroundColor: Colors.grey[200],
+                                      child: const Icon(
+                                        Icons.person,
+                                        size: 48,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              initialValue: _profilePicUrl,
+                              decoration: const InputDecoration(
+                                labelText: 'Profile Image URL (optional)',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.image),
+                              ),
+                              onChanged: (val) => setState(() => _profilePicUrl = val),
+                              onSaved: (val) => _profilePicUrl = val,
+                              validator: (val) {
+                                if (val != null && val.isNotEmpty && !Uri.parse(val).isAbsolute) {
+                                  return 'Enter a valid image URL or leave blank';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 24),
+                            TextFormField(
+                              controller: _nameController,
+                              decoration: const InputDecoration(
+                                labelText: 'Name',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.person),
+                              ),
+                              validator: (val) => val == null || val.isEmpty ? 'Enter your name' : null,
+                            ),
+                            const SizedBox(height: 16),
+                            TextFormField(
+                              initialValue: _email,
+                              decoration: const InputDecoration(
+                                labelText: 'Email',
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.email),
+                              ),
+                              enabled: false,
+                            ),
+                            const SizedBox(height: 32),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton.icon(
+                                icon: const Icon(Icons.save),
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                ),
+                                onPressed: _saveProfile,
+                                label: const Text('Save Changes'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(),
-                ),
-                validator:
-                    (val) =>
-                        val == null || val.isEmpty ? 'Enter your name' : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                initialValue: _email,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                ),
-                enabled: false,
-              ),
-              const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: _saveProfile,
-                child: const Text('Save Changes'),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

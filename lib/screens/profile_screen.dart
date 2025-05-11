@@ -11,47 +11,70 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return const Center(child: Text('Not logged in'));
-    final userDoc = FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid);
     return Scaffold(
       appBar: AppBar(title: const Text('Profile'), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-          stream: userDoc.snapshots(),
-          builder: (context, snap) {
-            final data = snap.data?.data();
+        child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+          stream: FirebaseFirestore.instance
+              .collection('projects')
+              .where('ownerId', isEqualTo: user.uid)
+              .snapshots(),
+          builder: (context, projectSnap) {
+            final projects = projectSnap.data?.docs ?? [];
+            int totalLikes = projects.fold(0, (sum, doc) => sum + ((doc.data()['likes'] ?? 0) as num).toInt());
             return ListView(
               children: [
                 Row(
                   children: [
-                    CircleAvatar(
-                      radius: 36,
-                      backgroundImage:
-                          (data?['profilePic'] ?? '').isNotEmpty
-                              ? NetworkImage(data!['profilePic'])
+                    StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                      stream: FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user.uid)
+                          .snapshots(),
+                      builder: (context, snap) {
+                        final data = snap.data?.data();
+                        final profilePic = data?['profilePic'] ?? '';
+                        return CircleAvatar(
+                          radius: 36,
+                          backgroundImage: (profilePic.isNotEmpty && Uri.tryParse(profilePic)?.isAbsolute == true)
+                              ? NetworkImage(profilePic)
                               : null,
-                      child:
-                          (data?['profilePic'] ?? '').isEmpty
+                          child: (profilePic.isEmpty || !(Uri.tryParse(profilePic)?.isAbsolute == true))
                               ? const Icon(Icons.person, size: 40)
                               : null,
+                        );
+                      },
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            data?['name'] ?? 'No Name',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                          Text(
-                            user.email ?? '',
-                            style: const TextStyle(color: Colors.grey),
+                          StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                            stream: FirebaseFirestore.instance
+                                .collection('users')
+                                .doc(user.uid)
+                                .snapshots(),
+                            builder: (context, snap) {
+                              final data = snap.data?.data();
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    data?['name'] ?? 'No Name',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                  Text(
+                                    user.email ?? '',
+                                    style: const TextStyle(color: Colors.grey),
+                                  ),
+                                ],
+                              );
+                            },
                           ),
                           Row(
                             children: [
@@ -60,7 +83,7 @@ class ProfileScreen extends StatelessWidget {
                                 color: Colors.red,
                                 size: 18,
                               ),
-                              Text(' ${data?['likes'] ?? 0} likes'),
+                              Text(' $totalLikes likes'),
                             ],
                           ),
                         ],

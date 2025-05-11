@@ -8,9 +8,9 @@ import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 
 // App color palette
-const kPrimary = Color(0xFF583101);
-const kSecondary = Color(0xFF8B5E34);
-const kThird = Color(0xFFF3D5B5);
+const kPrimary = Color(0xFF3B82F6);    // Blue 500
+const kSecondary = Color(0xFF6366F1);  // Indigo 500
+const kThird = Color(0xFFF1F5F9);      // Gray 100 (background/cards)
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
           secondary: kSecondary,
           background: kThird,
         ),
-        scaffoldBackgroundColor: Colors.white70,
+        scaffoldBackgroundColor: kThird,
         appBarTheme: AppBarTheme(
           backgroundColor: kPrimary,
           foregroundColor: Colors.white,
@@ -46,11 +46,13 @@ class MyApp extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
+            textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            elevation: 2,
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
-          fillColor: kThird,
+          fillColor: Colors.white,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: kSecondary),
@@ -68,9 +70,10 @@ class MyApp extends StatelessWidget {
           secondaryLabelStyle: const TextStyle(color: Colors.white),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        cardColor: kThird,
+        cardColor: Colors.white,
         iconTheme: IconThemeData(color: kPrimary),
         textSelectionTheme: TextSelectionThemeData(cursorColor: kPrimary),
+        dividerColor: kSecondary.withOpacity(0.2),
       ),
       home: AuthGate(),
       routes: {

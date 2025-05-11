@@ -37,7 +37,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             'name': _email.text.split('@')[0],
             'email': _email.text.trim(),
             'profilePic': null,
-            'likes': 0,
             'createdAt': FieldValue.serverTimestamp(),
           });
       Navigator.pushReplacementNamed(context, '/main');
@@ -51,66 +50,109 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Register')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              const SizedBox(height: 32),
-              TextFormField(
-                controller: _email,
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: (v) => v == null || v.isEmpty ? 'Enter email' : null,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _pass,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  suffixIcon: IconButton(
-                    icon: Icon(_hide ? Icons.visibility : Icons.visibility_off),
-                    onPressed: () => setState(() => _hide = !_hide),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Column(
+                          children: [
+                            Icon(Icons.person_add_alt_1, size: 48, color: Theme.of(context).colorScheme.primary),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Create Account',
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Register to get started',
+                              style: TextStyle(color: Colors.grey[600], fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                      TextFormField(
+                        controller: _email,
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.email),
+                        ),
+                        validator: (v) => v == null || v.isEmpty ? 'Enter email' : null,
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _pass,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          border: const OutlineInputBorder(),
+                          prefixIcon: const Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                            icon: Icon(_hide ? Icons.visibility : Icons.visibility_off),
+                            onPressed: () => setState(() => _hide = !_hide),
+                          ),
+                        ),
+                        obscureText: _hide,
+                        validator: (v) => v == null || v.isEmpty ? 'Enter password' : null,
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _confirm,
+                        decoration: InputDecoration(
+                          labelText: 'Confirm Password',
+                          border: const OutlineInputBorder(),
+                          prefixIcon: const Icon(Icons.lock_outline),
+                          suffixIcon: IconButton(
+                            icon: Icon(_hide2 ? Icons.visibility : Icons.visibility_off),
+                            onPressed: () => setState(() => _hide2 = !_hide2),
+                          ),
+                        ),
+                        obscureText: _hide2,
+                        validator: (v) => v != _pass.text ? 'Passwords do not match' : null,
+                      ),
+                      const SizedBox(height: 28),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          onPressed: _register,
+                          child: const Text('Register'),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Already have an account? '),
+                          TextButton(
+                            onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
+                            child: const Text('Login'),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                obscureText: _hide,
-                validator:
-                    (v) => v == null || v.isEmpty ? 'Enter password' : null,
               ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _confirm,
-                decoration: InputDecoration(
-                  labelText: 'Confirm Password',
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _hide2 ? Icons.visibility : Icons.visibility_off,
-                    ),
-                    onPressed: () => setState(() => _hide2 = !_hide2),
-                  ),
-                ),
-                obscureText: _hide2,
-                validator:
-                    (v) => v != _pass.text ? 'Passwords do not match' : null,
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _register,
-                child: const Text('Register'),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Already have an account? '),
-                  TextButton(
-                    onPressed:
-                        () => Navigator.pushReplacementNamed(context, '/login'),
-                    child: const Text('Login'),
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
         ),
       ),

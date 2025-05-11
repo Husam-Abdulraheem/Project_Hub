@@ -11,9 +11,9 @@ class EditProjectScreen extends StatefulWidget {
 
 class _EditProjectScreenState extends State<EditProjectScreen> {
   final _formKey = GlobalKey<FormState>();
-  String? _title, _description, _category, _url, _orgName, _githubRepo;
+  String? _title, _description, _category, _url, _orgName, _githubRepo, _imageUrl;
   bool _loading = false;
-  final _categories = ['Technical', 'Educational', 'Creative'];
+  final _categories = ['Technical', 'Educational', 'Creative', 'Business', 'Health', 'Science', 'Art', 'Other'];
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -29,6 +29,7 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
           'url': _url ?? '',
           'orgName': _orgName ?? '',
           'githubRepo': _githubRepo ?? '',
+          'image': _imageUrl ?? '',
         });
     setState(() => _loading = false);
     if (mounted) Navigator.pop(context);
@@ -127,6 +128,20 @@ class _EditProjectScreenState extends State<EditProjectScreen> {
                           labelText: 'GitHub Repo Link',
                         ),
                         onSaved: (v) => _githubRepo = v,
+                      ),
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        initialValue: data['image'],
+                        decoration: const InputDecoration(
+                          labelText: 'Project Image URL (optional)',
+                        ),
+                        onSaved: (v) => _imageUrl = v,
+                        validator: (v) {
+                          if (v != null && v.isNotEmpty && !Uri.parse(v).isAbsolute) {
+                            return 'Enter a valid image URL or leave blank';
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 12),
                       const SizedBox(height: 24),
