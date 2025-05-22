@@ -168,7 +168,9 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                                     : null,
                               ),
                               const SizedBox(width: 8),
-                              Text(
+                              Column(
+                                children: [
+                                  Text(
                                 owner?['name'] ?? 'Unknown',
                                 style: const TextStyle(fontWeight: FontWeight.w600),
                               ),
@@ -176,6 +178,8 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                               Text(
                                 owner?['email'] ?? '',
                                 style: const TextStyle(color: Colors.grey, fontSize: 12),
+                              ),
+                                ],
                               ),
                             ],
                           );
@@ -233,7 +237,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                           ),
                           const SizedBox(width: 4),
                           const Text('likes'),
-                          const Spacer(),
+                          const SizedBox(width: 16),
                           if (user != null && user.uid == project['ownerId'])
                             Row(
                               children: [
