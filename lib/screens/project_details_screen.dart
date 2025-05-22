@@ -233,11 +233,11 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                           ),
                           Text(
                             '${project['likes'] ?? 0}',
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                           ),
-                          const SizedBox(width: 4),
-                          const Text('likes'),
-                          const SizedBox(width: 16),
+                          const SizedBox(width: 3),
+                          const Text('likes', style: TextStyle(fontSize: 12)),
+                          const SizedBox(width: 6),
                           if (user != null && user.uid == project['ownerId'])
                             Row(
                               children: [
@@ -255,7 +255,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen> {
                                     );
                                   },
                                 ),
-                                const SizedBox(width: 8),
+                                const SizedBox(width: 5),
                                 OutlinedButton.icon(
                                   icon: const Icon(Icons.delete, size: 18),
                                   label: const Text('Delete'),
