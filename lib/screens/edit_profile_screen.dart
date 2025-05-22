@@ -88,102 +88,116 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Center(
-                  child: Card(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                    elevation: 4,
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Edit Profile',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 24,
-                              ),
-                            ),
-                            const SizedBox(height: 24),
-                            Center(
-                              child: _profilePicUrl != null && _profilePicUrl!.isNotEmpty && Uri.tryParse(_profilePicUrl!)?.isAbsolute == true
-                                  ? CircleAvatar(
-                                      radius: 48,
-                                      backgroundImage: NetworkImage(_profilePicUrl!),
-                                      backgroundColor: Colors.grey[200],
-                                    )
-                                  : CircleAvatar(
-                                      radius: 48,
-                                      backgroundColor: Colors.grey[200],
-                                      child: const Icon(
-                                        Icons.person,
-                                        size: 48,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                            ),
-                            const SizedBox(height: 16),
-                            TextFormField(
-                              initialValue: _profilePicUrl,
-                              decoration: const InputDecoration(
-                                labelText: 'Profile Image URL (optional)',
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.image),
-                              ),
-                              onChanged: (val) => setState(() => _profilePicUrl = val),
-                              onSaved: (val) => _profilePicUrl = val,
-                              validator: (val) {
-                                if (val != null && val.isNotEmpty && !Uri.parse(val).isAbsolute) {
-                                  return 'Enter a valid image URL or leave blank';
-                                }
-                                return null;
-                              },
-                            ),
-                            const SizedBox(height: 24),
-                            TextFormField(
-                              controller: _nameController,
-                              decoration: const InputDecoration(
-                                labelText: 'Name',
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.person),
-                              ),
-                              validator: (val) => val == null || val.isEmpty ? 'Enter your name' : null,
-                            ),
-                            const SizedBox(height: 16),
-                            TextFormField(
-                              initialValue: _email,
-                              decoration: const InputDecoration(
-                                labelText: 'Email',
-                                border: OutlineInputBorder(),
-                                prefixIcon: Icon(Icons.email),
-                              ),
-                              enabled: false,
-                            ),
-                            const SizedBox(height: 32),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton.icon(
-                                icon: const Icon(Icons.save),
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                ),
-                                onPressed: _saveProfile,
-                                label: const Text('Save Changes'),
-                              ),
-                            ),
-                          ],
+              padding: const EdgeInsets.all(20.0),
+              child: Card(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Edit Profile',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 24),
+                        if (_profilePicUrl != null && _profilePicUrl!.isNotEmpty && Uri.tryParse(_profilePicUrl!)?.isAbsolute == true)
+                          Center(
+                            child: CircleAvatar(
+                              radius: 48,
+                              backgroundImage: NetworkImage(_profilePicUrl!),
+                              backgroundColor: Colors.grey[200],
+                            ),
+                          ),
+                        if (_profilePicUrl == null || _profilePicUrl!.isEmpty || Uri.tryParse(_profilePicUrl!)?.isAbsolute != true)
+                          Center(
+                            child: CircleAvatar(
+                              radius: 48,
+                              backgroundColor: Colors.grey[200],
+                              child: const Icon(
+                                Icons.person,
+                                size: 48,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          initialValue: _profilePicUrl,
+                          decoration: InputDecoration(
+                            labelText: 'Profile Image URL (optional)',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            prefixIcon: const Icon(Icons.image),
+                          ),
+                          onChanged: (val) => setState(() => _profilePicUrl = val),
+                          onSaved: (val) => _profilePicUrl = val,
+                          validator: (val) {
+                            if (val != null && val.isNotEmpty && !Uri.parse(val).isAbsolute) {
+                              return 'Enter a valid image URL or leave blank';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 24),
+                        TextFormField(
+                          controller: _nameController,
+                          decoration: InputDecoration(
+                            labelText: 'Name',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            prefixIcon: const Icon(Icons.person),
+                          ),
+                          validator: (val) => val == null || val.isEmpty ? 'Enter your name' : null,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          initialValue: _email,
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            prefixIcon: const Icon(Icons.email),
+                          ),
+                          enabled: false,
+                        ),
+                        const SizedBox(height: 32),
+                      ],
                     ),
                   ),
+                ),
+              ),
+            ),
+      bottomNavigationBar: _loading
+          ? null
+          : Padding(
+              padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.save),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  onPressed: _saveProfile,
+                  label: const Text('Save Changes'),
                 ),
               ),
             ),
